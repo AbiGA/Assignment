@@ -5,6 +5,8 @@ REQUIREMENTS:
      1- node.js
      
      2- npm
+     
+     3- or WAMP or any web server
 
 
 npm install http-server -g
