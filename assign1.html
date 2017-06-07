@@ -1,0 +1,140 @@
+<!doctype html>
+<html ng-app="App" >
+<head>
+<!-- Styles -->
+<style>
+#chartdiv {
+	width		: 100%;
+	height		: 500px;
+	font-size	: 11px;
+}	
+}						
+</style>
+
+<!-- Resources -->
+<script src="https://www.amcharts.com/lib/3/amcharts.js"></script>
+<script src="https://www.amcharts.com/lib/3/serial.js"></script>
+<script src="https://www.amcharts.com/lib/3/plugins/export/export.min.js"></script>
+<link rel="stylesheet" href="https://www.amcharts.com/lib/3/plugins/export/export.css" type="text/css" media="all" />
+<script src="https://www.amcharts.com/lib/3/themes/light.js"></script>
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.2/angular.js"></script>
+<!-- Chart code -->
+<script>
+/**
+ * Convert source data to AmCharts-compatible format
+ */
+var chartData = [];
+var x = [];
+var y = [];
+var z = [];
+var z1 = [];
+var k = [];
+var l=[];
+var m=[];
+
+d3.json("angulardata.json", function(data) {
+  
+  angular.forEach(data.calls, function(value, key) {
+	  x.push(value);
+	  y.push(key);
+    });
+
+  angular.forEach(data.Quallified, function(value, key) {
+	  k.push(key);
+	  z.push(value);
+    });	
+	
+	angular.forEach(data.cost, function(value, key) {
+	  l.push(key);
+	  var myString = value.substring(1);
+	  value = parseInt(myString);
+	  m.push(value);
+    });	
+	
+	
+for( var i = 0; i < x.length; i++ ) {
+    for(var j = 0; j< z.length; j++) {
+		if(y[i]==k[j]){
+		    z1.push(z[j]);  
+			break;
+		}
+	}
+ 
+}
+
+for( var i = 0; i < x.length; i++ ) {
+    for(var j = 0; j< m.length; j++) {
+		if(y[i]==l[j]){
+		    chartData.push( {
+			"calls": x[ i ],
+			"country": y[ i ],
+			"quallified": z1[ i ],
+			"costs" : m[ j ]
+	
+  } )
+  break;
+		}
+	}
+ 
+}
+var chart = AmCharts.makeChart( "chartdiv", {
+  "type": "serial",
+  "theme": "light",
+  "dataProvider": chartData,
+  "valueAxes": [{
+        "unit": "",
+        "position": "left",
+        "title": "Growth Chart",
+    }],
+  "gridAboveGraphs": true,
+  "startDuration": 1,
+  "graphs": [{
+        "balloonText": "calls in [[category]] calls : <b>[[value]]</b>",
+        "fillAlphas": 0.9,
+        "lineAlpha": 0.2,
+        "title": "calls",
+        "type": "column",
+        "valueField": "calls"
+    }, {
+        "balloonText": "Quallified in [[category]]  : <b>[[value]]</b>",
+        "fillAlphas": 0.9,
+        "lineAlpha": 0.2,
+        "title": "quallified",
+        "type": "column",
+        "clustered":false,
+        "columnWidth":0.5,
+        "valueField": "quallified"
+    }, {
+        "balloonText": "costs in [[category]] : <b>$[[value]]</b>",
+        "fillAlphas": 0.9,
+        "lineAlpha": 0.2,
+        "title": "costs",
+        "type": "column",
+        "clustered":false,
+        "columnWidth":0.3,
+        "valueField": "costs"
+    }],
+    "plotAreaFillAlphas": 0.1,
+    "categoryField": "country",
+    "categoryAxis": {
+        "gridPosition": "start"
+    },
+    "export": {
+    	"enabled": true
+     }
+
+});
+
+});
+</script>
+</head>
+<body>
+<!-- HTML -->
+<div id="chartdiv"></div>
+
+<p> Blue : calls </p>
+<p> Yellow : qualified </p>
+<p> Green : costs </p>
+</body>
+</html>

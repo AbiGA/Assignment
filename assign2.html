@@ -1,0 +1,98 @@
+<html lang="en" ng-app="App">
+   <head>
+      <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/1.0.0/angular-material.min.css">
+      <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+      <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-aria.min.js"></script>
+      <script src="https://ajax.googleapis.com/ajax/libs/angular_material/1.0.0/angular-material.min.js"></script>
+      <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+	  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.2/angular.js"></script>
+     
+      <script language="javascript">
+         angular
+            .module('firstApplication', ['ngMaterial'])
+            .controller('cardController', cardController);
+
+         function cardController ($scope) {            
+         }  
+      </script>
+
+<script>
+var App = angular.module('App', []);
+
+
+App.controller('gitHubDataController', function($scope, $http) {
+	
+	$scope.username = "vmg";
+	 $scope.init = function(name)
+  {
+  	
+     $http.get("https://api.github.com/repos/"+$scope.username+"/"+name+"/issues?state=closed&access_token=c7d470040b61ca788b7e8e29be98a61a281e07d9")
+            .success(function (data) {
+                $scope.issuelen = data;
+            });	
+  };
+
+  $scope.issues = function(name)
+  {
+	
+	var issuelen;
+	
+     $http.get("https://api.github.com/repos/"+$scope.username+"/"+name+"/issues?state=closed&access_token=c7d470040b61ca788b7e8e29be98a61a281e07d9")
+            .success(function (data) {
+                issuelen = data.length;
+				console.log(issuelen);
+				return issuelen;
+            });	
+  
+  }
+  
+
+        $http.get("https://api.github.com/users/" + $scope.username+"?access_token=c7d470040b61ca788b7e8e29be98a61a281e07d9")
+            .success(function (data) {
+                $scope.userData = data;
+	            });
+			
+		
+		
+        $http.get("https://api.github.com/users/"+$scope.username+"/repos?access_token=c7d470040b61ca788b7e8e29be98a61a281e07d9")
+            .success(function (data) {
+                $scope.repoData = data;
+				
+            });	      		
+
+	});
+	
+</script
+      
+   </head>
+   <body>  
+   <div  ng-controller="gitHubDataController">
+      <md-card ng-repeat= "repo in repoData">
+         <md-card-header> 
+            <md-card-avatar>
+               <img class="md-user-avatar" ng-src="{{repo.owner.avatar_url}}">
+            </md-card-avatar>
+            <md-card-header-text>
+               <span class="md-title">{{repo.full_name}}</span>
+               <span class="md-subhead">Repo id : {{repo.id}}</span>
+			   <span class="md-headline">Repo name : {{repo.name}}</span>
+            </md-card-header-text>
+         </md-card-header>        
+		<md-card-title>
+            <md-card-title-text>
+			<div>
+               <span class="md-headline" ng-init="init(repo.name)">Issues closed : {{issuelen.length}}</span>
+			<!--   <div ng-repeat= "issue in issuelen">
+			    <ul>
+				  <li>{{issuelen.user.login}}</li>
+				</ul>
+			   </div> -->			 
+			 </div> 
+		 </md-card-title-text>
+         </md-card-title>
+         <md-card-actions layout="row" layout-align="start center">
+            
+               </md-card>
+	  </div>
+   </body>
+</html>
