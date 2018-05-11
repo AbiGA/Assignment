@@ -1,4 +1,7 @@
-# Assignment
+# Node, Angular JS basics
+
+assign1- Display Json data using charts using angular js. angulardata.json conatains the required json data.
+assign2- Usage of github api.
 
 REQUIREMENTS:
 
